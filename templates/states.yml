@@ -54,3 +54,17 @@ states:
     aliases: [no_aplicar, no aplicar, skip, monitor]
     description: Doesn't fit, don't apply
     dashboard_group: skip
+
+# Triage gate (Bijan portal). Set ONCE on a job before it enters the lifecycle.
+# Lives alongside `states` — independent dimension. The `applications.triage`
+# column in Supabase uses these IDs verbatim.
+triage:
+  - id: approve
+    label: Approve
+    description: Candidate wants to apply. System stages tailored CV + form answers; user clicks Submit.
+  - id: reject
+    label: Reject
+    description: Candidate is not pursuing. Job moves to `discarded` lifecycle status. Optional reject_reason feeds rejection-pattern analysis.
+  - id: manual
+    label: Manual
+    description: Candidate will apply manually outside the portal. System tracks but does not stage.

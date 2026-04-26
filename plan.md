@@ -200,12 +200,12 @@ create index on interview_questions using gin(tags);
 - [x] **2.2** Confirmed scale in `modes/_shared.md` is **1-5** (not 0-5 — adjusted plan accordingly; `score × 20` yields 20-100)
 - [ ] **2.3** Run oferta on a real JD URL — *deferred until you have a JD to test with; not a blocker*
 
-### Phase 3 — Triage column on application records
-- [ ] **3.1** Schema covers it (Phase 1.4)
-- [ ] **3.2** Edit `modes/tracker.md` — document new triage vocab
-- [ ] **3.3** Edit `templates/states.yml` — add `triage:` enum
-- [ ] **3.4** Write `migrate-applications-to-supabase.mjs` (idempotent on `job.source_url`)
-- [ ] **3.5** Run migration script
+### Phase 3 — Triage column on application records ✅
+- [x] **3.1** Schema covers it (Phase 1.4)
+- [x] **3.2** `modes/tracker.md` documents new Triage column + Approve/Reject/Manual semantics
+- [x] **3.3** `templates/states.yml` has new top-level `triage:` block alongside `states:`
+- [x] **3.4** `scripts/migrate-applications-to-supabase.mjs` written (parses markdown table, upserts jobs+applications, idempotent on source_url)
+- [x] **3.5** Ran script — no-op (no `data/applications.md` exists yet, fresh install)
 
 ### Phase 4 — Stage mode (Playwright pre-fill, no auto-submit)
 - [ ] **4.1** Create `modes/stage.md` — agent prompt
