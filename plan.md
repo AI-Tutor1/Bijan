@@ -213,10 +213,10 @@ create index on interview_questions using gin(tags);
 - [x] **4.3** CV upload reuses Storage `cvs/` bucket (downloaded to /tmp, attached via `setInputFiles`)
 - [ ] **4.4** Test with real Greenhouse / Workday URL — *deferred until first job intake*
 
-### Phase 5 — Question bank
-- [ ] **5.1** Schema covers it (Phase 1.4)
-- [ ] **5.2** Edit `modes/interview-prep.md` — INSERT new STAR stories into `interview_questions`
-- [ ] **5.3** Build the portal page (Phase 6.8)
+### Phase 5 — Question bank ✅ (Phase 6.8 portal page still pending)
+- [x] **5.1** Schema covers it (Phase 1.4)
+- [x] **5.2** `modes/interview-prep.md` extended: agent now appends a fenced ```bijan-questions JSON block to each prep file. `scripts/sync-question-bank.mjs` reads the block and upserts rows (dedup by normalized question text). Smoke-tested.
+- [ ] **5.3** Portal `/interview-prep` page — *deferred to Phase 6.8*
 
 ### Phase 6 — Web portal (Next.js + Tailwind + shadcn/ui)
 

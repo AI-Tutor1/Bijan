@@ -139,3 +139,40 @@ After delivering the report:
 - **Cite everything.** Every question, every stat, every claim gets a source or an `[inferred]` tag.
 - Generate in the language of the JD (EN default).
 - Be direct. This is a working prep document, not a pep talk.
+
+---
+
+## Bijan portal — sync to question bank
+
+After producing the markdown report, append a fenced `bijan-questions` JSON block at the very end of the file. The block is a flat array of question/answer/tag triples that the portal will index. The markdown above stays human-readable; the JSON block is machine-readable.
+
+```bijan-questions
+[
+  {
+    "question": "Walk me through how you'd design a multi-tenant LLM evaluation pipeline.",
+    "answer": "STAR+R: Built X for Y. Reflect on Z. (link to story-bank entry)",
+    "tags": ["technical", "system-design", "llmops", "inferred"]
+  },
+  {
+    "question": "Tell me about a time you had to push back on a stakeholder.",
+    "answer": "STAR+R: Story 'Disagreed with CEO on roadmap', from story-bank.md.",
+    "tags": ["behavioral", "leadership", "story-bank"]
+  }
+]
+```
+
+Tag conventions:
+- One of: `technical` | `behavioral` | `role-specific` | `red-flag`
+- Source: `glassdoor` | `blind` | `leetcode` | `inferred` (where the question came from)
+- Archetype: matching one from `_shared.md` (`llmops`, `agentic`, `pm`, etc.)
+- Plus any free-form topic tags
+
+After saving the markdown, run:
+
+```bash
+node scripts/sync-question-bank.mjs interview-prep/{company-slug}-{role-slug}.md [job_id]
+```
+
+The script reads only the fenced JSON block and upserts each row into the Supabase `interview_questions` table (idempotent — dedup by lower-cased, whitespace-normalized question text). If `[job_id]` is given, it's stored as `source_job_id`; otherwise null.
+
+The markdown file remains the canonical document — Supabase is a queryable index on top of it.
