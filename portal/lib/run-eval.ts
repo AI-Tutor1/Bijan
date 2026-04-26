@@ -1,19 +1,20 @@
 import Anthropic from '@anthropic-ai/sdk';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { supabaseServer } from './supabase/server';
 import { fetchJobDescription } from './fetch-jd';
 
-const REPO_ROOT = path.resolve(process.cwd(), '..');
-const MODES_DIR = path.join(REPO_ROOT, 'modes');
+// Read mode prompts from a path RELATIVE TO THIS FILE (not process.cwd) so it
+// works locally (parent ../modes synced via prebuild) and on Vercel
+// (committed lib/_modes/). Source of truth is repo modes/; copies live here.
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const MODES_DIR = path.join(HERE, '_modes');
 
-// Read the canonical career-ops prompts ONCE per process. They are large and
-// don't change between requests, so we cache them and let Anthropic prompt-
-// cache the system prompt across calls (saves ~$0.005 per eval after first).
 const SYSTEM_PROMPT = (() => {
   const shared = readSafe(path.join(MODES_DIR, '_shared.md'));
   const oferta = readSafe(path.join(MODES_DIR, 'oferta.md'));
-  const profile = readSafe(path.join(MODES_DIR, '_profile.md')); // optional user customization
+  const profile = readSafe(path.join(MODES_DIR, '_profile.md'));
   return [shared, oferta, profile].filter(Boolean).join('\n\n---\n\n');
 })();
 

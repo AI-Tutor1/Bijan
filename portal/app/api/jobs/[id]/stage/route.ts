@@ -21,6 +21,20 @@ export async function POST(
   const { id } = await ctx.params;
   if (!id) return NextResponse.json({ error: 'jobId required' }, { status: 400 });
 
+  // On Vercel (or any host without a display + Playwright + the parent repo),
+  // we can't spawn the visible-Chromium runner. Tell the user to run it on
+  // their own machine.
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: 'Stage runner requires a local display. Run on your machine: `node stage-form.mjs ' + id + '`',
+        local_command: `node stage-form.mjs ${id}`,
+      },
+      { status: 501 },
+    );
+  }
+
   // Use dynamic imports + runtime path construction so Turbopack doesn't
   // try to resolve the spawn target as a module at build time.
   const { spawn } = await import('node:child_process');

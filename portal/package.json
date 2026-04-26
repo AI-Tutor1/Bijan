@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/sync-modes.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-modes.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

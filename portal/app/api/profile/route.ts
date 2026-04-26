@@ -26,7 +26,9 @@ export async function POST(req: Request) {
   }
 
   // Optional: also write to ../cv.md so CLI modes (oferta.md, pdf.md) keep working.
-  if (body.export) {
+  // Skipped on Vercel — the filesystem is read-only there, and the parent
+  // repo isn't part of the deploy unit anyway.
+  if (body.export && !process.env.VERCEL) {
     const cvPath = path.resolve(process.cwd(), '..', 'cv.md');
     try {
       await fs.writeFile(cvPath, body.cv_md, 'utf8');
