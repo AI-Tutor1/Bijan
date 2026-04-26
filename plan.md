@@ -207,11 +207,11 @@ create index on interview_questions using gin(tags);
 - [x] **3.4** `scripts/migrate-applications-to-supabase.mjs` written (parses markdown table, upserts jobs+applications, idempotent on source_url)
 - [x] **3.5** Ran script — no-op (no `data/applications.md` exists yet, fresh install)
 
-### Phase 4 — Stage mode (Playwright pre-fill, no auto-submit)
-- [ ] **4.1** Create `modes/stage.md` — agent prompt
-- [ ] **4.2** Create `stage-form.mjs` — Playwright runner (visible mode, no submit)
-- [ ] **4.3** Reuse `generate-pdf.mjs` for CV upload step
-- [ ] **4.4** Test with one Greenhouse and one Workday URL
+### Phase 4 — Stage mode (Playwright pre-fill, no auto-submit) ✅
+- [x] **4.1** `modes/stage.md` — full pipeline (LOAD → TAILOR CV → ANSWERS → STAGE → STOP), critical rules (never submit, visible only, highlight unfilled)
+- [x] **4.2** `stage-form.mjs` — visible Chromium, fetches job/form_answers/cv_versions from Supabase, fuzzy-matches labels via Jaccard token overlap (≥0.4), highlights unmatched in red, never submits
+- [x] **4.3** CV upload reuses Storage `cvs/` bucket (downloaded to /tmp, attached via `setInputFiles`)
+- [ ] **4.4** Test with real Greenhouse / Workday URL — *deferred until first job intake*
 
 ### Phase 5 — Question bank
 - [ ] **5.1** Schema covers it (Phase 1.4)
