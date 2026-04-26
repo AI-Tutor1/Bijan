@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.0 (2026-04-26)
+
+
+### Features
+
+* **phase1+2:** apply Supabase schema, seed profile, add Confidence/100 ([b4ec9d8](https://github.com/AI-Tutor1/Bijan/commit/b4ec9d822d4783018c06e556bc08f10288be8c28))
+* **phase3:** triage vocab + applications.md → Supabase migrator ([d4215a9](https://github.com/AI-Tutor1/Bijan/commit/d4215a9b0149f3691303e294bd57adcad54c25ce))
+* **phase4:** stage mode — Playwright pre-fill, never auto-submits ([b7aaaa2](https://github.com/AI-Tutor1/Bijan/commit/b7aaaa28d5fc044e1b050c8f7ae9b5ad97c233b9))
+* **phase5:** question bank sync via fenced JSON block ([646e95c](https://github.com/AI-Tutor1/Bijan/commit/646e95c32a42d075b01f5763a698a5f36fe7ec1b))
+* **phase6:** Next.js portal — full UI on top of Supabase ([2e4a84f](https://github.com/AI-Tutor1/Bijan/commit/2e4a84f535a83284fd12df42559788f0fc0f4453))
+* **supabase:** add 0001_initial_schema migration; tick off Phase 0 ([5aac332](https://github.com/AI-Tutor1/Bijan/commit/5aac332f1da7c41442a78b63693e07bdf9cfe471))
+
+
+### Bug Fixes
+
+* anchor interview-prep/ gitignore rule to repo root ([5338d1a](https://github.com/AI-Tutor1/Bijan/commit/5338d1a121d92f8cc0013274910879a246b12eb5))
+
 ## [1.5.0](https://github.com/santifer/career-ops/compare/v1.4.0...v1.5.0) (2026-04-14)
 
 
