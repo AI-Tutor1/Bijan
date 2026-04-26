@@ -51,4 +51,6 @@ bun.lock
 .claude/settings.local.json
 .claude/memory/
 career-dashboard
-package-lock.json
+
+# Note: package-lock.json IS committed (root + portal/) for reproducible CI.
+# Upstream career-ops ignores it; Bijan does not.
