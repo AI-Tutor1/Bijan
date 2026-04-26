@@ -176,23 +176,23 @@ create index on interview_questions using gin(tags);
 
 ## Detailed Task List
 
-### Phase 0 — Repo & GitHub setup
+### Phase 0 — Repo & GitHub setup ✅
 - [x] **0.0** Copy plan to `Bijan/Bijan/plan.md` (this file)
-- [ ] **0.1** Init git: `cd Bijan/Bijan && git init`
-- [ ] **0.2** Update `.gitignore`: add `.env.local`, `interview-prep/`, `portal/.next/`, `portal/node_modules/`, `*.pdf`
-- [ ] **0.3** Extend `.env.example` with `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`
-- [ ] **0.4** First commit: `chore: import career-ops base + Bijan plan`
-- [ ] **0.5** Create GitHub repo: `gh repo create Bijan --private --source=. --push`
-- [ ] **0.6** Add a portal README with setup steps (deferred to Phase 6 once `portal/` exists)
+- [x] **0.1** Init git
+- [x] **0.2** Update `.gitignore`: added `.env.local`, `interview-prep/`, `portal/.next/`, `portal/node_modules/`, `*.pdf`
+- [x] **0.3** Extended `.env.example` with Supabase + Anthropic keys
+- [x] **0.4** First commit: `chore: import career-ops base + Bijan plan` (188 files, sensitive paths verified excluded)
+- [x] **0.5** Pushed to https://github.com/AI-Tutor1/Bijan (private)
+- [ ] **0.6** Portal README — deferred to Phase 6 once `portal/` exists
 
 ### Phase 1 — Supabase project
-- [ ] **1.1** Create Supabase project at supabase.com (free tier)
-- [ ] **1.2** Save URL + anon key + service-role key into `Bijan/.env.local`
-- [ ] **1.3** Create folder `Bijan/supabase/migrations/`
-- [ ] **1.4** Write migration `0001_initial_schema.sql` with the schema above
-- [ ] **1.5** Apply migration via Supabase dashboard SQL editor
-- [ ] **1.6** Create Storage buckets: `cvs`, `screenshots`, `reports` (private)
-- [ ] **1.7** Insert seed row into `profile` table (paste your `cv.md` content)
+- [ ] **1.1** Create Supabase project at supabase.com (free tier) — *waiting on user*
+- [ ] **1.2** Save URL + anon key + service-role key into `Bijan/.env.local` — *waiting on user*
+- [x] **1.3** Created folder `Bijan/supabase/migrations/`
+- [x] **1.4** Wrote migration `0001_initial_schema.sql` with the schema above
+- [ ] **1.5** Apply migration via Supabase dashboard SQL editor — *waiting on user*
+- [ ] **1.6** Create Storage buckets: `cvs`, `screenshots`, `reports` (private) — *waiting on user*
+- [ ] **1.7** Insert seed row into `profile` table (paste your `cv.md` content) — *waiting on user*
 
 ### Phase 2 — Numeric confidence in oferta.md
 - [ ] **2.1** Edit `modes/oferta.md` — emit `**Confidence:** NN/100` (= existing `score × 20`)
