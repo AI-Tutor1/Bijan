@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import { getJob, getReportMarkdown } from '@/lib/queries';
 import { Badge } from '@/components/ui/badge';
 import { TriageButtons } from '@/components/triage-buttons';
+import { EvalButton } from '@/components/eval-button';
 import { ExternalLink } from 'lucide-react';
 import { formatDate, scoreColor, statusColor, triageColor } from '@/lib/utils';
 
@@ -64,8 +65,16 @@ export default async function JobPage({ params }: { params: Promise<{ id: string
         </div>
       </header>
 
-      <section className="mb-8">
+      <section className="mb-8 space-y-4">
         <TriageButtons jobId={job.id} current={application?.triage ?? null} />
+        <div className="flex items-center gap-3">
+          <EvalButton jobId={job.id} hasEvaluation={!!evaluation} />
+          {!evaluation && (
+            <span className="text-xs text-zinc-500">
+              No evaluation yet. Run one to get a score, blocks A-F, and a markdown report.
+            </span>
+          )}
+        </div>
       </section>
 
       <section className="rounded-lg border border-zinc-800 bg-zinc-950/30 p-6">

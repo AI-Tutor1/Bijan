@@ -278,10 +278,22 @@ Stack: **Next.js 16** + React 19 + Tailwind 4 + Radix primitives (skipped shadcn
 
 **Verified end-to-end:** intake → triage approve/reject → /approved /rejected pages reflect changes; dashboard counts update.
 
-### Phase 7 — Evaluation worker bridge
-- [ ] **7.1** `portal/lib/run-eval.ts` — wraps shell-out + Supabase write-back
-- [ ] **7.2** Modify oferta to emit a fenced `json` block with `{score, letter, blocks}`
-- [ ] **7.3** Synchronous spawn at first; upgrade to queue later if needed
+### Phase 7 — Evaluation worker bridge ✅
+- [x] **7.1** `portal/lib/run-eval.ts` — Anthropic SDK call (model `claude-sonnet-4-6`) with prompt-cached system prompt (`_shared.md` + `oferta.md` + optional `_profile.md`). Reads JD from `raw_jd` or fetches `source_url` via `lib/fetch-jd.ts`. Uploads markdown to Storage `reports/`, parses ` ```bijan-evaluation` block, inserts `evaluations` row.
+- [x] **7.2** `modes/oferta.md` extended: agent now appends a structured ` ```bijan-evaluation` JSON block with `score`, `confidence`, `letter_grade`, `archetype`, `block_a`..`block_f`. Portal stores blocks as `jsonb` for queryability.
+- [x] **7.3** Synchronous spawn in API route (`maxDuration = 300`). Background queue can be added later via Vercel Cron / Supabase Edge Functions.
+
+**Plus deferred items from Phase 6:**
+- [x] **Approve → auto-spawn stage-form.mjs** — `TriageButtons` now POSTs to `/api/jobs/[id]/stage` after Approve. Route uses `child_process.spawn(detached)` so the visible Chromium window survives the API response. (Local-dev only — won't work on Vercel; deployment guidance in plan.)
+- [x] **Screenshot intake** — `/api/intake/screenshot` accepts a multipart upload (≤5MB png/jpg/webp/gif), saves to Storage `screenshots/`, sends to Claude Vision, parses `{company, title, source_url, raw_jd}`, upserts a `jobs` row. UI: `/intake` Card 3 has a real file picker now.
+- [x] **Eval button on job detail** — `<EvalButton>` triggers `/api/jobs/[id]/evaluate`; refreshes the page when done.
+
+**Smoke-tested without an Anthropic key:**
+- `/api/jobs/[id]/evaluate` → `ANTHROPIC_API_KEY not set` (clean)
+- `/api/intake/screenshot` → `ANTHROPIC_API_KEY not set` (clean)
+- `/api/jobs/[id]/stage` → `{"ok":true,"pid":N}` (spawn works regardless of key)
+
+**To actually run evaluations / screenshot extraction**, you need to add `ANTHROPIC_API_KEY=sk-ant-...` to `.env.local`. A Sonnet 4.6 eval uses ~12k input tokens and ~2k output tokens — about $0.04/eval, dropping to ~$0.005 after the first thanks to prompt caching of the static `_shared.md + oferta.md`.
 
 ### Phase 8 — Deploy
 - [ ] **8.1** Push portal to GitHub

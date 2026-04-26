@@ -14,6 +14,7 @@ export default function IntakePage() {
   const [title, setTitle] = useState('');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
 
   async function submit(payload: object) {
     setBusy(true);
@@ -28,8 +29,29 @@ export default function IntakePage() {
     if (r.ok) {
       setMsg({ kind: 'ok', text: `Saved. Job id: ${data.id}` });
       router.refresh();
-      // Reset form
       setUrl(''); setText(''); setCompany(''); setTitle('');
+    } else {
+      setMsg({ kind: 'err', text: data.error || `${r.status}` });
+    }
+  }
+
+  async function submitScreenshot() {
+    if (!screenshotFile) return;
+    setBusy(true);
+    setMsg(null);
+    const fd = new FormData();
+    fd.append('file', screenshotFile);
+    const r = await fetch('/api/intake/screenshot', { method: 'POST', body: fd });
+    const data = await r.json().catch(() => ({}));
+    setBusy(false);
+    if (r.ok) {
+      const e = data.extracted || {};
+      setMsg({
+        kind: 'ok',
+        text: `Extracted "${e.company || '?'}" — "${e.title || '?'}" (${e.jd_chars || 0} chars). Job id: ${data.id}`,
+      });
+      router.refresh();
+      setScreenshotFile(null);
     } else {
       setMsg({ kind: 'err', text: data.error || `${r.status}` });
     }
@@ -98,12 +120,30 @@ export default function IntakePage() {
         <Card>
           <CardHeader>
             <CardTitle>3. Screenshot</CardTitle>
-            <CardDescription>Drag-drop a LinkedIn / Indeed screenshot — extract via Claude Vision (coming Phase 7)</CardDescription>
+            <CardDescription>
+              Drop a LinkedIn / Indeed / careers-page screenshot. Claude Vision will extract company, title, URL, and the full JD text. Requires{' '}
+              <code className="text-zinc-400">ANTHROPIC_API_KEY</code> in <code className="text-zinc-400">.env.local</code>.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="rounded-md border border-dashed border-zinc-700 bg-zinc-900/30 px-4 py-8 text-center text-sm text-zinc-600">
-              Screenshot upload — coming in Phase 7 (Claude Vision wiring)
-            </div>
+          <CardContent className="space-y-3">
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={(e) => setScreenshotFile(e.target.files?.[0] ?? null)}
+              className="block w-full text-sm text-zinc-400 file:mr-3 file:rounded-md file:border-0 file:bg-zinc-100 file:px-4 file:py-1.5 file:text-sm file:font-medium file:text-zinc-900 hover:file:bg-zinc-200"
+            />
+            {screenshotFile && (
+              <div className="text-xs text-zinc-500">
+                {screenshotFile.name} · {Math.round(screenshotFile.size / 1024)} KB
+              </div>
+            )}
+            <Button
+              variant="primary"
+              disabled={busy || !screenshotFile}
+              onClick={submitScreenshot}
+            >
+              {busy ? 'Extracting…' : 'Extract & save'}
+            </Button>
           </CardContent>
         </Card>
 

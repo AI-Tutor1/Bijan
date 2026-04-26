@@ -150,6 +150,33 @@ Analyze the job posting for signals that indicate whether this is a real, active
 
 `Confidence = round(Score × 20)`. Examples: Score 4.5 → 90/100, Score 3.2 → 64/100, Score 5 → 100/100. The Bijan web portal sorts jobs by this number, so it must appear in the report header alongside the existing `**Score:** {X/5}` line.
 
+### 0b. Append `bijan-evaluation` JSON block (REQUIRED for portal ingestion)
+
+At the very end of the report markdown, append a fenced ```bijan-evaluation block. The portal's evaluation worker parses ONLY this block to populate the `evaluations` row in Supabase — the markdown above stays as the human-readable record.
+
+```bijan-evaluation
+{
+  "score": 4.5,
+  "confidence": 90,
+  "letter_grade": "A",
+  "archetype": "AI Solutions Architect",
+  "tldr": "One-line summary of the role and your fit.",
+  "block_a": { "domain": "...", "function": "...", "seniority": "...", "remote": "..." },
+  "block_b": { "matches": [...], "gaps": [...] },
+  "block_c": { "level_detected": "...", "strategy": "..." },
+  "block_d": { "salary_range": "...", "demand": "..." },
+  "block_e": { "top_cv_changes": [...] },
+  "block_f": { "stories": [...] }
+}
+```
+
+Field rules:
+- `score`: number 0-5 (decimals OK, matches the `**Score:**` header)
+- `confidence`: integer 0-100, == `round(score × 20)` (matches `**Confidence:**` header)
+- `letter_grade`: one letter A-F
+- `archetype`: the detected archetype string (from `_shared.md` Archetype Detection table)
+- Block fields are JSON objects/arrays — the portal stores them as `jsonb` for later querying. Use whatever structure best captures each block; just keep keys consistent across reports.
+
 ### 1. Guardar report .md
 
 Guardar evaluación completa en `reports/{###}-{company-slug}-{YYYY-MM-DD}.md`.

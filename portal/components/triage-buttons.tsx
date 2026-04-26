@@ -25,6 +25,14 @@ export function TriageButtons({ jobId, current }: { jobId: string; current: Tria
       setError(`Update failed: ${res.status} ${text.slice(0, 100)}`);
       return;
     }
+    // On Approve, also kick off the stage-form spawn (opens visible Chromium).
+    if (triage === 'approve') {
+      const sr = await fetch(`/api/jobs/${jobId}/stage`, { method: 'POST' });
+      if (!sr.ok) {
+        const t = await sr.text();
+        setError(`Triage saved, but stage-form failed: ${t.slice(0, 100)}`);
+      }
+    }
     startTransition(() => router.refresh());
   }
 
