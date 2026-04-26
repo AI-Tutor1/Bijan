@@ -28,8 +28,8 @@ modes/_profile.md
 .env.local
 .env.*.local
 
-# Bijan portal data + interview prep
-interview-prep/
+# Bijan portal data + interview prep (anchor to root — portal/app/interview-prep is code)
+/interview-prep/
 *.pdf
 
 # Bijan portal build artifacts
