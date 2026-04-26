@@ -218,57 +218,65 @@ create index on interview_questions using gin(tags);
 - [x] **5.2** `modes/interview-prep.md` extended: agent now appends a fenced ```bijan-questions JSON block to each prep file. `scripts/sync-question-bank.mjs` reads the block and upserts rows (dedup by normalized question text). Smoke-tested.
 - [ ] **5.3** Portal `/interview-prep` page — *deferred to Phase 6.8*
 
-### Phase 6 — Web portal (Next.js + Tailwind + shadcn/ui)
+### Phase 6 — Web portal (Next.js + Tailwind + shadcn/ui) ✅ (core)
 
-**6.1 — Scaffold**
-- [ ] `npx create-next-app@latest portal --ts --tailwind --app`
-- [ ] Install: `@supabase/supabase-js`, `@supabase/ssr`, `lucide-react`, `react-markdown`, `gray-matter`
-- [ ] `npx shadcn@latest init`; add: `button card tabs dialog input textarea badge table dropdown-menu toast sonner`
-- [ ] Create `lib/supabase/server.ts` and `lib/supabase/client.ts`
+Stack: **Next.js 16** + React 19 + Tailwind 4 + Radix primitives (skipped shadcn CLI — interactive prompts; hand-rolled equivalents in `components/ui/*`). Lucide icons. react-markdown for reports.
 
-**6.2 — Layout & nav**
-- [ ] `app/layout.tsx` — sidebar nav: Dashboard / Inbox / Approved / Rejected / Manual / Applied / Interview Prep / Profile
-- [ ] Dark theme (Catppuccin-ish to match the Go TUI)
+**6.1 — Scaffold** ✅
+- [x] `npx create-next-app@latest portal --ts --tailwind --app --turbopack`
+- [x] Installed: `@supabase/supabase-js`, `@supabase/ssr`, `lucide-react`, `react-markdown`, `remark-gfm`, `clsx`, `tailwind-merge`, `class-variance-authority`, `@radix-ui/*`
+- [x] Hand-rolled `components/ui/{button,card,badge,input}.tsx` (with cva variants)
+- [x] `lib/supabase/server.ts` (service-role + fetch cache opt-out)
+- [x] `lib/utils.ts` (cn, formatDate, scoreColor, triageColor, statusColor)
+- [x] `lib/queries.ts` (listJobs, getJob, getReportMarkdown, listInterviewQuestions, getProfile)
+- [x] Symlinked `portal/.env.local → ../.env.local` (single source for both CLI scripts and portal)
 
-**6.3 — Dashboard (`/`)**
-- [ ] List jobs joined with `evaluations.confidence_score` desc
-- [ ] Columns: Company, Title, Score, Triage, Status, Date
-- [ ] Row click → `/job/[id]`
+**6.2 — Layout & nav** ✅
+- [x] `app/layout.tsx`, `components/sidebar.tsx` — sidebar with: Dashboard / Intake / Inbox / Approved / Rejected / Manual / Applied / Interview Prep / Profile
+- [x] Dark theme via custom CSS vars in globals.css (zinc-based)
 
-**6.4 — Job detail (`/job/[id]`)**
-- [ ] Render markdown report from Storage
-- [ ] Three big buttons: Approve (green) / Reject (red) / Manual (purple)
-- [ ] Approve → `/api/jobs/[id]/approve` → spawns `stage-form.mjs`
-- [ ] Reject → dialog for reason → `triage=reject, status=discarded`
-- [ ] Manual → `triage=manual`
+**6.3 — Dashboard `/`** ✅
+- [x] Stat cards (Total / Pending / Approved / Applied)
+- [x] Sortable rows: Score, Company, Title, Triage badge, Status badge, Scanned date
 
-**6.5 — Triage tabs (`/approved`, `/rejected`, `/manual`)**
-- [ ] Filtered table views
+**6.4 — Job detail `/job/[id]`** ✅
+- [x] Awaits `params` (Next 16 breaking change)
+- [x] Renders markdown report from Storage with prose-bijan styles
+- [x] Approve/Reject/Manual buttons (TriageButtons client component)
+- [x] Reject inline dialog asks for reason
+- [x] PostgREST nested-row normalization (object vs. array)
 
-**6.6 — Lifecycle view (`/applied`)**
-- [ ] Kanban: Applied / Responded / Interview / Offer / Rejected
-- [ ] "Mark applied" button on Approved-but-not-Applied rows
+**6.5 — Triage tabs** ✅
+- [x] `/inbox` (triage=null), `/approved`, `/rejected`, `/manual`
 
-**6.7 — Intake (`/intake`)**
-- [ ] URL paste → `/api/intake/url` → triggers `oferta`
-- [ ] Screenshot drop → `screenshots` bucket → Claude Vision extracts → eval
-- [ ] Raw JD text → directly into `jobs.raw_jd`
+**6.6 — Lifecycle `/applied`** ✅
+- [x] Kanban-style 5 columns: Applied / Responded / Interview / Offer / Rejected
+- [ ] Drag-drop / "Mark applied" buttons — *deferred (basic links to detail page work for now)*
 
-**6.8 — Interview Prep (`/interview-prep`)**
-- [ ] Search bar (text + tag filter)
-- [ ] Question list with collapsible answers
-- [ ] "Add question" dialog
-- [ ] Tag chips, click-to-filter
+**6.7 — Intake `/intake`** ✅ (URL + raw JD)
+- [x] URL paste → `/api/intake` → upserts job
+- [x] Raw JD paste with company/title fields
+- [ ] Screenshot drop — *Phase 7 (Claude Vision)*
 
-**6.9 — Profile (`/profile`)**
-- [ ] Edit `cv_md`, `goals_md`, archetypes
-- [ ] Save → upserts `profile` row
-- [ ] "Export to cv.md" button (writes file so CLI modes still work)
+**6.8 — Interview Prep `/interview-prep`** ✅
+- [x] Search bar (text + tag filter via URL params)
+- [x] Collapsible Q&A `<details>` list
+- [x] Add-question dialog (client component)
+- [x] Clickable tag chips
 
-**6.10 — API routes that shell out to existing scripts**
-- [ ] `app/api/jobs/[id]/approve/route.ts`
-- [ ] `app/api/intake/url/route.ts`
-- [ ] `app/api/eval/[id]/route.ts`
+**6.9 — Profile `/profile`** ✅
+- [x] Edit CV markdown + goals
+- [x] Save (upserts profile row)
+- [x] "Save & export to ../cv.md" writes file so CLI modes keep working
+
+**6.10 — API routes** ✅
+- [x] `POST /api/intake` — upsert job (idempotent on source_url)
+- [x] `POST /api/jobs/[id]/triage` — set triage; reject also sets status=discarded + reject_reason
+- [x] `POST /api/interview-questions` — manual add
+- [x] `POST /api/profile` — upsert + optional export to cv.md
+- [ ] Approve → spawn stage-form.mjs — *Phase 7 (eval bridge)*
+
+**Verified end-to-end:** intake → triage approve/reject → /approved /rejected pages reflect changes; dashboard counts update.
 
 ### Phase 7 — Evaluation worker bridge
 - [ ] **7.1** `portal/lib/run-eval.ts` — wraps shell-out + Supabase write-back
