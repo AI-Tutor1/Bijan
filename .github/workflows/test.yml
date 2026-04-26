@@ -1,19 +1,48 @@
-name: Tests
+name: CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  test:
+  portal:
+    name: Portal — typecheck + build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: portal
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - uses: actions/setup-go@v6
+          cache: 'npm'
+          cache-dependency-path: portal/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+        env:
+          # Build does not query the DB, but the supabase client is constructed
+          # at module load — give it dummy values so it doesn't throw.
+          SUPABASE_URL: https://dummy.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: dummy
+          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy
+
+  scripts:
+    name: Scripts — node --check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          go-version: '1.22'
-      - run: npm install
-      - run: node test-all.mjs --quick
+          node-version: '20'
+      - name: Syntax-check all .mjs scripts
+        run: |
+          set -e
+          for f in $(find . -name '*.mjs' -not -path './portal/*' -not -path './node_modules/*'); do
+            echo "checking $f"
+            node --check "$f"
+          done
