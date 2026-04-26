@@ -146,6 +146,10 @@ Analyze the job posting for signals that indicate whether this is a real, active
 
 **SIEMPRE** después de generar los bloques A-G:
 
+### 0. Calcular Confidence (Bijan portal)
+
+`Confidence = round(Score × 20)`. Examples: Score 4.5 → 90/100, Score 3.2 → 64/100, Score 5 → 100/100. The Bijan web portal sorts jobs by this number, so it must appear in the report header alongside the existing `**Score:** {X/5}` line.
+
 ### 1. Guardar report .md
 
 Guardar evaluación completa en `reports/{###}-{company-slug}-{YYYY-MM-DD}.md`.
@@ -162,6 +166,7 @@ Guardar evaluación completa en `reports/{###}-{company-slug}-{YYYY-MM-DD}.md`.
 **Fecha:** {YYYY-MM-DD}
 **Arquetipo:** {detectado}
 **Score:** {X/5}
+**Confidence:** {NN}/100
 **Legitimacy:** {High Confidence | Proceed with Caution | Suspicious}
 **PDF:** {ruta o pendiente}
 

@@ -185,19 +185,20 @@ create index on interview_questions using gin(tags);
 - [x] **0.5** Pushed to https://github.com/AI-Tutor1/Bijan (private)
 - [ ] **0.6** Portal README — deferred to Phase 6 once `portal/` exists
 
-### Phase 1 — Supabase project
-- [ ] **1.1** Create Supabase project at supabase.com (free tier) — *waiting on user*
-- [ ] **1.2** Save URL + anon key + service-role key into `Bijan/.env.local` — *waiting on user*
+### Phase 1 — Supabase project ✅
+- [x] **1.1** Project created at supabase.com (ref: `fmrcvqhfzbfcueuowdzo`)
+- [x] **1.2** Keys saved to `Bijan/.env.local` (gitignored)
 - [x] **1.3** Created folder `Bijan/supabase/migrations/`
-- [x] **1.4** Wrote migration `0001_initial_schema.sql` with the schema above
-- [ ] **1.5** Apply migration via Supabase dashboard SQL editor — *waiting on user*
-- [ ] **1.6** Create Storage buckets: `cvs`, `screenshots`, `reports` (private) — *waiting on user*
-- [ ] **1.7** Insert seed row into `profile` table (paste your `cv.md` content) — *waiting on user*
+- [x] **1.4** Wrote migration `0001_initial_schema.sql`
+- [x] **1.5** Migration applied (verified by `scripts/setup-supabase.mjs`)
+- [x] **1.6** Buckets `cvs`, `screenshots`, `reports` created (private)
+- [x] **1.7** Profile row seeded with `examples/cv-example.md` (will be replaced via portal Profile page in Phase 6.9)
+- [x] **1.8** Helper script `scripts/setup-supabase.mjs` (idempotent bootstrap)
 
-### Phase 2 — Numeric confidence in oferta.md
-- [ ] **2.1** Edit `modes/oferta.md` — emit `**Confidence:** NN/100` (= existing `score × 20`)
-- [ ] **2.2** Confirm 0-5 scale in `modes/_shared.md`
-- [ ] **2.3** Run on one existing report URL, verify the line appears
+### Phase 2 — Numeric confidence in oferta.md ✅ (mostly)
+- [x] **2.1** `modes/oferta.md` now emits `**Confidence:** {NN}/100` in report header + directive explaining formula `round(score × 20)`
+- [x] **2.2** Confirmed scale in `modes/_shared.md` is **1-5** (not 0-5 — adjusted plan accordingly; `score × 20` yields 20-100)
+- [ ] **2.3** Run oferta on a real JD URL — *deferred until you have a JD to test with; not a blocker*
 
 ### Phase 3 — Triage column on application records
 - [ ] **3.1** Schema covers it (Phase 1.4)
